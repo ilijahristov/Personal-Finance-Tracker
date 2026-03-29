@@ -1,0 +1,259 @@
+{
+  "info": {
+    "name": "Personal Finance Tracker",
+    "_postman_id": "finance-tracker-collection",
+    "description": "CRUD tests for /transactions endpoint",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "transactionId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Create Transaction (POST)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 201 Created', function () {",
+              "  pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test('Response has id', function () {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('id');",
+              "  pm.collectionVariables.set('transactionId', json.id);",
+              "  console.log('Saved transaction id:', json.id);",
+              "});",
+              "",
+              "pm.test('Amount matches', function () {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json.amount).to.eql(150.50);",
+              "});",
+              "",
+              "pm.test('Type is income or expense', function () {",
+              "  const json = pm.response.json();",
+              "  pm.expect(['income', 'expense']).to.include(json.type);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 150.50,\n  \"type\": \"expense\",\n  \"category\": \"food\",\n  \"description\": \"Grocery shopping\",\n  \"date\": \"2026-03-30\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/transactions",
+          "host": ["{{baseUrl}}"],
+          "path": ["transactions"]
+        }
+      }
+    },
+    {
+      "name": "2. Get All Transactions (GET)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200 OK', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response is an array', function () {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.be.an('array');",
+              "});",
+              "",
+              "pm.test('Array has at least one transaction', function () {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json.length).to.be.above(0);",
+              "});",
+              "",
+              "pm.test('Each transaction has required fields', function () {",
+              "  const json = pm.response.json();",
+              "  json.forEach(t => {",
+              "    pm.expect(t).to.have.property('id');",
+              "    pm.expect(t).to.have.property('amount');",
+              "    pm.expect(t).to.have.property('type');",
+              "    pm.expect(t).to.have.property('date');",
+              "  });",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/transactions",
+          "host": ["{{baseUrl}}"],
+          "path": ["transactions"]
+        }
+      }
+    },
+    {
+      "name": "3. Get One Transaction (GET by ID)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200 OK', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Returns correct transaction', function () {",
+              "  const json = pm.response.json();",
+              "  const savedId = pm.collectionVariables.get('transactionId');",
+              "  pm.expect(json.id).to.eql(savedId);",
+              "});",
+              "",
+              "pm.test('Has all fields', function () {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.all.keys('id', 'amount', 'type', 'category', 'description', 'date', 'created_at');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/transactions/{{transactionId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["transactions", "{{transactionId}}"]
+        }
+      }
+    },
+    {
+      "name": "4. Update Transaction (PUT)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200 OK', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Amount was updated', function () {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json.amount).to.eql(200.00);",
+              "});",
+              "",
+              "pm.test('Category was updated', function () {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json.category).to.eql('transport');",
+              "});",
+              "",
+              "pm.test('ID is unchanged', function () {",
+              "  const json = pm.response.json();",
+              "  const savedId = pm.collectionVariables.get('transactionId');",
+              "  pm.expect(json.id).to.eql(savedId);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amount\": 200.00,\n  \"type\": \"expense\",\n  \"category\": \"transport\",\n  \"description\": \"Monthly bus pass\",\n  \"date\": \"2026-03-30\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/transactions/{{transactionId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["transactions", "{{transactionId}}"]
+        }
+      }
+    },
+    {
+      "name": "5. Delete Transaction (DELETE)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 204 No Content', function () {",
+              "  pm.response.to.have.status(204);",
+              "});",
+              "",
+              "pm.test('Response body is empty', function () {",
+              "  pm.expect(pm.response.text()).to.be.empty;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{baseUrl}}/transactions/{{transactionId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["transactions", "{{transactionId}}"]
+        }
+      }
+    },
+    {
+      "name": "6. Get Deleted Transaction (404 check)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 404 Not Found', function () {",
+              "  pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test('Error message is returned', function () {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('error');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/transactions/{{transactionId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["transactions", "{{transactionId}}"]
+        }
+      }
+    }
+  ]
+}
