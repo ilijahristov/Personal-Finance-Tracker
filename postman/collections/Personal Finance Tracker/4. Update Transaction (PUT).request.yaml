@@ -1,0 +1,39 @@
+$kind: http-request
+url: "{{baseUrl}}/transactions/{{transactionId}}"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "amount": 200.00,
+      "type": "expense",
+      "category": "transport",
+      "description": "Monthly bus pass",
+      "date": "2026-03-30"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Status is 200 OK', function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test('Amount was updated', function () {
+        const json = pm.response.json();
+        pm.expect(json.amount).to.eql(200.00);
+      });
+
+      pm.test('Category was updated', function () {
+        const json = pm.response.json();
+        pm.expect(json.category).to.eql('transport');
+      });
+
+      pm.test('ID is unchanged', function () {
+        const json = pm.response.json();
+        const savedId = pm.collectionVariables.get('transactionId');
+        pm.expect(json.id).to.eql(savedId);
+      });
+    language: text/javascript
+order: 4000

@@ -1,0 +1,24 @@
+$kind: http-request
+url: "{{baseUrl}}/transactions/{{transactionId}}"
+method: GET
+scripts:
+  - type: afterResponse
+    code: >-
+      pm.test('Status is 200 OK', function () {
+        pm.response.to.have.status(200);
+      });
+
+
+      pm.test('Returns correct transaction', function () {
+        const json = pm.response.json();
+        const savedId = pm.collectionVariables.get('transactionId');
+        pm.expect(json.id).to.eql(savedId);
+      });
+
+
+      pm.test('Has all fields', function () {
+        const json = pm.response.json();
+        pm.expect(json).to.have.all.keys('id', 'amount', 'type', 'category', 'description', 'date', 'created_at');
+      });
+    language: text/javascript
+order: 3000

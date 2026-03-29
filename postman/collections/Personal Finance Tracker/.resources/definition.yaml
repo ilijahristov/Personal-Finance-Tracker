@@ -1,0 +1,5 @@
+$kind: collection
+description: CRUD tests for /transactions endpoint
+variables:
+  baseUrl: http://localhost:3000
+  transactionId: ""
