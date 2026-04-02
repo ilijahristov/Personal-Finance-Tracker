@@ -95,10 +95,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton
               className="data-[slot=sidebar-menu-button]:!p-1.5"
-              render={<link href="/" />}
             >
-              <IconWallet className="!size-5" />
-              <span className="text-base font-semibold">Finance Tracker</span>
+              <a href="/">
+                <IconWallet className="!size-5" />
+                <span className="text-base font-semibold">Finance Tracker</span>
+              </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
