@@ -1,10 +1,12 @@
 "use client"
 
 import { useLocation } from "react-router-dom"
+import { useAddTransaction } from "@/context/AddTransactionContext"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 
 export function SiteHeader() {
+  const { openModal } = useAddTransaction()
 
   const titleMap: Record<string, string> = {
     "/": "Dashboard",
@@ -30,7 +32,15 @@ export function SiteHeader() {
           orientation="vertical"
           className="mx-2 data-[orientation=vertical]:h-4"
         />
-        <h1 className="text-base font-medium">Dashboard</h1>
+        <h1 className="text-base font-medium">{title}</h1>
+        {pathname === "/transactions" && (
+          <button
+            className="ml-auto bg-black text-white text-sm font-medium px-4 py-1.5 rounded-md hover:bg-neutral-800 transition-colors cursor-pointer"
+            onClick={openModal}
+          >
+            + Add Transaction
+          </button>
+        )}
       </div>
     </header>
   )
