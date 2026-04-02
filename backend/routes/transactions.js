@@ -3,7 +3,7 @@ const router = express.Router();
 
 const supabase = require('../db/supabase');
 
-// POST /transactions
+// POST - create new transaction
 router.post('/', async (req, res) => {
     const { amount, type, category, description, date } = req.body;
 
