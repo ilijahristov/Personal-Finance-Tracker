@@ -1,6 +1,6 @@
 # 💸 Personal Finance Tracker
 
-A full-stack personal finance management application built with **React**, **Node.js/Express**, **TypeScript**, and **PostgreSQL via Supabase**. Track income and expenses, categorize transactions, and gain visibility into your financial health.
+A full-stack personal finance management application built with **React**, **Node.js/Express**, **TypeScript**, and **PostgreSQL via Supabase**. Track income, expenses and categorize transactions.
 
 ---
 
@@ -25,7 +25,7 @@ Personal-Finance-Tracker/
 │   │   └── supabase.js          # Supabase client initialization
 │   ├── routes/
 │   │   └── transactions.js      # Transaction route handlers
-│   ├── .env                     # Environment variables (never commit)
+│   ├── .env                     # Environment variables
 │   ├── .gitignore
 │   └── app.js                   # Express app entry point
 ├── frontend/
@@ -62,7 +62,7 @@ Personal-Finance-Tracker/
 | `created_at` | `timestamptz` | Auto-set | Timestamp of record creation |
 
 
-### Transactions
+### Transactions API Endpoints
 
 #### `POST /transactions`
 Create a new transaction.

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useAddTransaction } from "@/context/AddTransactionContext"
+import { createTransaction } from "@/api/transactions"
 import {
   InputGroup,
   InputGroupAddon,
@@ -28,7 +29,7 @@ const expenseCategories = [
 ]
 
 export function AddTransactionModal() {
-  const { isOpen, closeModal } = useAddTransaction()
+  const { isOpen, closeModal, triggerRefresh } = useAddTransaction()
 
   const [amount, setAmount] = useState("")
   const [type, setType] = useState<"income" | "expense" | "">("")
@@ -36,11 +37,43 @@ export function AddTransactionModal() {
   const [subCategory, setSubCategory] = useState("")
   const [date, setDate] = useState("")
   const [notes, setNotes] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState("")
+
+  function handleReset() {
+    setAmount(""); setType(""); setCategory("")
+    setSubCategory(""); setDate(""); setNotes(""); setError("")
+  }
+
+  async function handleAdd() {
+    if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+      setError("Please enter a valid amount."); return
+    }
+    if (!type) { setError("Please select a type."); return }
+    if (!date) { setError("Please select a date."); return }
+
+    setError("")
+    setIsSubmitting(true)
+    try {
+      await createTransaction({
+        amount: parseFloat(amount),
+        type,
+        category: category || null,
+        description: notes || null,
+        date,
+      })
+      triggerRefresh()
+      closeModal()
+      handleReset()
+    } catch {
+      setError("Failed to save transaction. Please try again.")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   if (!isOpen) return null
 
-  // TODO: Wire up Cancel button — call closeModal() and reset all form state fields to ""
-  // TODO: Wire up Add button — call createTransaction() from @/api/transactions.js with form state, then closeModal() and refresh the transaction list
   // TODO: Add subcategories per category to the SubCategory dropdown
   // TODO: Format the date display as DD/Month Text/YYYY (e.g. 02/April/2026) in the date InputGroup
 
@@ -55,7 +88,7 @@ export function AddTransactionModal() {
       >
         <button
           className="absolute top-4 right-4 text-black text-lg font-bold cursor-pointer leading-none hover:opacity-60 transition-opacity"
-          onClick={closeModal}
+          onClick={() => { closeModal(); handleReset() }}
         >
           &times;
         </button>
@@ -160,20 +193,30 @@ export function AddTransactionModal() {
         <InputGroup>
           <InputGroupTextarea
             placeholder="Notes"
+            maxLength={150}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
           />
+          <InputGroupAddon align="block-end">
+            <InputGroupText className="text-xs text-muted-foreground">
+              {150 - notes.length} characters left
+            </InputGroupText>
+          </InputGroupAddon>
         </InputGroup>
 
         {/* Action buttons */}
+        {error && <p className="text-xs text-red-500 text-right -mt-2">{error}</p>}
         <div className="flex justify-end gap-2 mt-2">
-          <button className="px-4 py-1.5 text-sm rounded-md border border-black text-black hover:bg-neutral-100 transition-colors cursor-pointer">
-            Cancel
-          </button>
-          <button className="px-4 py-1.5 text-sm rounded-md bg-black text-white hover:bg-neutral-800 transition-colors cursor-pointer">
-            Add
+          
+          <button
+            onClick={handleAdd}
+            disabled={isSubmitting}
+            className="px-4 py-1.5 text-sm rounded-md bg-black text-white hover:bg-neutral-800 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? "Adding..." : "Add"}
           </button>
         </div>
+
       </div>
     </div>
   )

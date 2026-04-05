@@ -12,7 +12,7 @@ app.use('/transactions', transactionRoutes);
 
 
 app.get('/', (req, res) => {
-    res.send('Hello, Ge!');
+    res.send('Server is running');
 });
 
 
