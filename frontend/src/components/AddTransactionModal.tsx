@@ -28,6 +28,111 @@ const expenseCategories = [
   "Entertainment",
 ]
 
+const expenseSubCategories = {
+  "Housing": [
+    "Rent",
+    "Mortgage",
+    "Property Taxes",
+    "Home Insurance",
+    "Home Maintenance",
+  ],
+  "Transportation": [
+    "Gas",
+    "Maintenance",
+    "Public Transportation",
+    "Parking",
+    "Other",
+  ],
+  "Food": [
+    "Groceries",
+    "Restaurants",
+    "Snacks",
+    "Other",
+  ],
+  "Utilities": [
+    "Electricity",
+    "Water",
+    "Internet",
+    "Other",
+  ],
+  "Clothing": [
+    "Clothing",
+    "Shoes",
+    "Other",
+  ],
+  "Medical": [
+    "Doctor",
+    "Dental",
+    "Vision",
+    "Other",
+  ],
+  "Insurance": [
+    "Health",
+    "Life",
+    "Auto",
+    "Home",
+    "Other",
+  ],
+  "Household Items/Supplies": [
+    "Cleaning Supplies",
+    "Paper Products",
+    "Other",
+  ],
+  "Personal": [
+    "Entertainment",
+    "Gifts",
+    "Other",
+  ],
+  "Debt": [
+    "Credit Card",
+    "Loan",
+    "Other",
+  ],
+  "Education": [
+    "Tuition",
+    "Books",
+    "Other",
+  ],
+  "Savings": [
+    "Emergency Fund",
+    "Retirement",
+    "Other",
+  ],
+  "Gifts/Donations": [
+    "Charity",
+    "Other",
+  ],
+  "Entertainment": [
+    "Movies",
+    "Concerts",
+    "Other",
+  ],
+}
+
+const incomeCategories = [
+  "Salary",
+  "Freelance",
+  "Investments",
+  "Other",
+]
+
+const incomeSubCategories = {
+  "Salary": [
+    "Full-Time",
+    "Part-Time",
+    "Other",
+  ],
+  "Freelance": [
+    "Freelance",
+    "Other",
+  ],
+  "Investments": [
+    "Stocks",
+    "Bonds",
+    "Other",
+  ],
+}
+
 export function AddTransactionModal() {
   const { isOpen, closeModal, triggerRefresh } = useAddTransaction()
 

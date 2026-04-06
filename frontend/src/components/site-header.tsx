@@ -11,8 +11,6 @@ export function SiteHeader() {
   const titleMap: Record<string, string> = {
     "/": "Dashboard",
     "/transactions": "Transactions",
-    "/income": "Income",
-    "/expenses": "Expenses",
     "/categories": "Categories",
   }
   

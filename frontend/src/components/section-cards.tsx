@@ -15,9 +15,13 @@ import {
 
 export function SectionCards() {
   const [balance, setBalance] = useState(0)
+  const [income, setIncome] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const [expenses, setExpenses] = useState(0)
 
+
+  // useEffect to load transactions
   useEffect(() => {
     let isMounted = true
 
@@ -46,6 +50,72 @@ export function SectionCards() {
     return () => {
       isMounted = false
     }
+  }, [])
+
+
+  // useEffect to load income
+  useEffect(() => {
+    let isMounted = true
+
+    const loadIncome = async () => {
+      setLoading(true)
+      setError(false)
+
+      try {
+        const transactions = await getAllTransactions()
+        const computedIncome = transactions.reduce((total, transaction) => {
+          if (transaction.type === "income") return total + transaction.amount
+          return total
+        }, 0)
+
+        if (isMounted) setIncome(computedIncome)
+        } catch {
+          if (isMounted) setError(true)
+        } finally {
+          if (isMounted) setLoading(false)
+        }
+    }
+
+
+    loadIncome()
+
+    return () => {
+      isMounted = false
+    }
+
+  }, [])
+
+
+  // useEffect to load expenses
+  useEffect(() => {
+    let isMounted = true
+
+    const loadExpenses = async () => {
+      setLoading(true)
+      setError(false)
+
+      try {
+        const transactions = await getAllTransactions()
+        const computedExpenses = transactions.reduce((total, transaction) => {
+          if (transaction.type === "expense") return total + transaction.amount
+          return total
+        }, 0)
+
+        if (isMounted) setExpenses(computedExpenses)
+        } catch {
+          if (isMounted) setError(true)
+        } finally {
+          if (isMounted) setLoading(false)
+        }
+    }
+
+
+    loadExpenses()
+
+    return () => {
+      isMounted = false
+    }
+
   }, [])
 
   return (
@@ -80,7 +150,14 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Total Income</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            $6,000.00
+            {loading
+              ? "Loading..."
+              : error
+                ? "Error"
+                : income.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  })}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -99,7 +176,14 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Total Expenses</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            $1,750.00
+            {loading
+              ? "Loading..."
+              : error
+                ? "Error"
+                : expenses.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  })}
           </CardTitle>
         </CardHeader>
         <CardContent>
