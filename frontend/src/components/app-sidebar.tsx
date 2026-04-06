@@ -8,8 +8,6 @@ import {
   IconReport,
   IconSettings,
   IconTag,
-  IconTrendingDown,
-  IconTrendingUp,
   IconWallet,
   IconFileSpreadsheet,
 } from "@tabler/icons-react"
@@ -44,16 +42,6 @@ const data = {
       title: "Transactions",
       url: "/transactions",
       icon: IconList,
-    },
-    {
-      title: "Income",
-      url: "/income",
-      icon: IconTrendingUp,
-    },
-    {
-      title: "Expenses",
-      url: "/expenses",
-      icon: IconTrendingDown,
     },
     {
       title: "Categories",

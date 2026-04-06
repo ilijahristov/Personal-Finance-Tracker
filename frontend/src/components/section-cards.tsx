@@ -1,7 +1,9 @@
 "use client"
 
 import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
+import { useState, useEffect } from "react"
 
+import { getAllTransactions } from "@/api/transactions"
 import { Badge } from "@/components/ui/badge"
 import {
   Card,
@@ -12,13 +14,54 @@ import {
 } from "@/components/ui/card"
 
 export function SectionCards() {
+  const [balance, setBalance] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadTransactions = async () => {
+      setLoading(true)
+      setError(false)
+
+      try {
+        const transactions = await getAllTransactions()
+        const computedBalance = transactions.reduce((total, transaction) => {
+          if (transaction.type === "income") return total + transaction.amount
+          if (transaction.type === "expense") return total - transaction.amount
+          return total
+        }, 0)
+
+        if (isMounted) setBalance(computedBalance)
+      } catch {
+        if (isMounted) setError(true)
+      } finally {
+        if (isMounted) setLoading(false)
+      }
+    }
+
+    loadTransactions()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   return (
     <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 lg:px-6">
       <Card className="@container/card">
         <CardHeader>
           <CardDescription>Total Balance</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            $4,250.00
+            {loading
+              ? "Loading..."
+              : error
+                ? "Error"
+                : balance.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  })}
           </CardTitle>
         </CardHeader>
         <CardContent>

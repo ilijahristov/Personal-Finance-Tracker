@@ -7,8 +7,6 @@ import { SectionCards } from "@/components/section-cards"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { AddTransactionProvider } from "@/context/AddTransactionContext"
 import TransactionsPage from "@/pages/transactions/TransactionsPage"
-import IncomePage from "@/pages/income/IncomePage"
-import ExpensesPage from "@/pages/expenses/ExpensesPage"
 import CategoriesPage from "@/pages/categories/CategoriesPage"
 
 export default function App() {
@@ -31,8 +29,6 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<SectionCards />} />
                 <Route path="/transactions" element={<TransactionsPage />} />
-                <Route path="/income" element={<IncomePage />} />
-                <Route path="/expenses" element={<ExpensesPage />} />
                 <Route path="/categories" element={<CategoriesPage />} />
               </Routes>
             </div>
