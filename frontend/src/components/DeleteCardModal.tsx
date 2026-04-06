@@ -1,8 +1,25 @@
+"use client"
+
+import { deleteTransaction } from "@/api/transactions"
+
+
 interface DeleteCardModalProps {
   transactionId: string | null
   onClose: () => void
   onDeleted: () => void
 }
+
+async function handleDelete(transactionId: string, onDeleted: () => void, onClose: () => void) {
+
+  try {
+    await deleteTransaction(transactionId)
+    onDeleted()
+    onClose()
+  } catch {
+  }
+}
+
+
 
 export function DeleteCardModal({ transactionId, onClose, onDeleted }: DeleteCardModalProps) {
   if (!transactionId) return null
@@ -17,10 +34,11 @@ export function DeleteCardModal({ transactionId, onClose, onDeleted }: DeleteCar
         onMouseDown={(e) => e.stopPropagation()}
       >
         <button
+          type="button"
           className="absolute top-4 right-4 text-black text-lg font-bold cursor-pointer leading-none hover:opacity-60 transition-opacity"
           onClick={onClose}
         >
-          &times;
+          x
         </button>
 
         <h2 className="text-base font-semibold mt-2">Are you sure?</h2>
@@ -30,8 +48,8 @@ export function DeleteCardModal({ transactionId, onClose, onDeleted }: DeleteCar
 
         <button
           className="bg-black text-white text-sm font-medium px-4 py-1.5 rounded-md hover:bg-neutral-800 transition-colors cursor-pointer"
-          onClick={async () => {
-            // TODO: wire up deleteTransaction(transactionId) then call onDeleted() and onClose()
+          onClick={async () => { 
+            handleDelete(transactionId, onDeleted, onClose)
           }}
         >
           Delete
