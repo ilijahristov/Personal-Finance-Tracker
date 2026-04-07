@@ -3,11 +3,11 @@
 import { Routes, Route } from "react-router-dom"
 import { AppSidebar } from "@/components/nav/app-sidebar"
 import { SiteHeader } from "@/components/header/site-header"
-import { SectionCards } from "@/components/cards/section-cards"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { AddTransactionProvider } from "@/context/AddTransactionContext"
 import TransactionsPage from "@/pages/transactions/TransactionsPage"
 import CategoriesPage from "@/pages/categories/CategoriesPage"
+import DashboardPage from "@/pages/dashboard/DashboardPage"
 
 export default function App() {
   return (
@@ -27,7 +27,7 @@ export default function App() {
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               <Routes>
-                <Route path="/" element={<SectionCards />} />
+                <Route path="/" element={<DashboardPage />} />
                 <Route path="/transactions" element={<TransactionsPage />} />
                 <Route path="/categories" element={<CategoriesPage />} />
               </Routes>
