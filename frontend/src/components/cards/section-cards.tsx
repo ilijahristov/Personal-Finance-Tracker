@@ -3,7 +3,7 @@
 import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
 import { useState, useEffect } from "react"
 
-import { getAllTransactions } from "@/api/transactions"
+import { getAllTransactions, type Transaction } from "@/api/transactions"
 import { Badge } from "@/components/ui/badge"
 import {
   Card,
@@ -19,9 +19,31 @@ export function SectionCards() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [expenses, setExpenses] = useState(0)
+  const [balanceTrend, setBalanceTrend] = useState<number>(0)
+  const [incomeTrend, setIncomeTrend] = useState<number>(0)
+  const [expensesTrend, setExpensesTrend] = useState<number>(0)
 
+  const getPeriodMetrics = (transactions: Transaction[]) => {
+    return transactions.reduce(
+      (acc, transaction) => {
+        if (transaction.type === "income") {
+          acc.income += transaction.amount
+        } else if (transaction.type === "expense") {
+          acc.expenses += transaction.amount
+        }
+        acc.balance = acc.income - acc.expenses
+        return acc
+      },
+      { balance: 0, income: 0, expenses: 0 }
+    )
+  }
 
-  // useEffect to load transactions
+  const getTrend = (thisMonthValue: number, lastMonthValue: number) => {
+    if (lastMonthValue === 0) return 0
+    const trend = ((thisMonthValue - lastMonthValue) / Math.abs(lastMonthValue)) * 100
+    return Number(trend.toFixed(1))
+  }
+
   useEffect(() => {
     let isMounted = true
 
@@ -31,13 +53,34 @@ export function SectionCards() {
 
       try {
         const transactions = await getAllTransactions()
-        const computedBalance = transactions.reduce((total, transaction) => {
-          if (transaction.type === "income") return total + transaction.amount
-          if (transaction.type === "expense") return total - transaction.amount
-          return total
-        }, 0)
+        const now = new Date()
+        const thisMonth = now.getMonth()
+        const thisYear = now.getFullYear()
+        const lastMonth = thisMonth === 0 ? 11 : thisMonth - 1
+        const lastMonthYear = thisMonth === 0 ? thisYear - 1 : thisYear
 
-        if (isMounted) setBalance(computedBalance)
+        const thisMonthTransactions = transactions.filter((tx) => {
+          const date = new Date(tx.date)
+          return date.getMonth() === thisMonth && date.getFullYear() === thisYear
+        })
+
+        const lastMonthTransactions = transactions.filter((tx) => {
+          const date = new Date(tx.date)
+          return date.getMonth() === lastMonth && date.getFullYear() === lastMonthYear
+        })
+
+        const thisMonthMetrics = getPeriodMetrics(thisMonthTransactions)
+        const lastMonthMetrics = getPeriodMetrics(lastMonthTransactions)
+
+        if (isMounted) {
+          setBalance(thisMonthMetrics.balance)
+          setIncome(thisMonthMetrics.income)
+          setExpenses(thisMonthMetrics.expenses)
+
+          setBalanceTrend(getTrend(thisMonthMetrics.balance, lastMonthMetrics.balance))
+          setIncomeTrend(getTrend(thisMonthMetrics.income, lastMonthMetrics.income))
+          setExpensesTrend(getTrend(thisMonthMetrics.expenses, lastMonthMetrics.expenses))
+        }
       } catch {
         if (isMounted) setError(true)
       } finally {
@@ -50,72 +93,6 @@ export function SectionCards() {
     return () => {
       isMounted = false
     }
-  }, [])
-
-
-  // useEffect to load income
-  useEffect(() => {
-    let isMounted = true
-
-    const loadIncome = async () => {
-      setLoading(true)
-      setError(false)
-
-      try {
-        const transactions = await getAllTransactions()
-        const computedIncome = transactions.reduce((total, transaction) => {
-          if (transaction.type === "income") return total + transaction.amount
-          return total
-        }, 0)
-
-        if (isMounted) setIncome(computedIncome)
-        } catch {
-          if (isMounted) setError(true)
-        } finally {
-          if (isMounted) setLoading(false)
-        }
-    }
-
-
-    loadIncome()
-
-    return () => {
-      isMounted = false
-    }
-
-  }, [])
-
-
-  // useEffect to load expenses
-  useEffect(() => {
-    let isMounted = true
-
-    const loadExpenses = async () => {
-      setLoading(true)
-      setError(false)
-
-      try {
-        const transactions = await getAllTransactions()
-        const computedExpenses = transactions.reduce((total, transaction) => {
-          if (transaction.type === "expense") return total + transaction.amount
-          return total
-        }, 0)
-
-        if (isMounted) setExpenses(computedExpenses)
-        } catch {
-          if (isMounted) setError(true)
-        } finally {
-          if (isMounted) setLoading(false)
-        }
-    }
-
-
-    loadExpenses()
-
-    return () => {
-      isMounted = false
-    }
-
   }, [])
 
   return (
@@ -136,12 +113,21 @@ export function SectionCards() {
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">
-            <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
-              <IconTrendingUp className="size-3" />
-              +8.2%
+            <Badge
+              variant="outline"
+              className={`flex gap-1 rounded-lg text-xs ${
+                balanceTrend >= 0 ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {balanceTrend >= 0 ? (
+                <IconTrendingUp className="size-3" />
+              ) : (
+                <IconTrendingDown className="size-3" />
+              )}
+              {balanceTrend >= 0 ? `+${balanceTrend}%` : `${balanceTrend}%`}
             </Badge>
             <span className="text-muted-foreground text-sm">
-              Up from last month
+              {balanceTrend >= 0 ? "Up from last month" : "Down from last month"}
             </span>
           </div>
         </CardContent>
@@ -162,12 +148,21 @@ export function SectionCards() {
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">
-            <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
-              <IconTrendingUp className="size-3" />
-              +12.5%
+            <Badge
+              variant="outline"
+              className={`flex gap-1 rounded-lg text-xs ${
+                incomeTrend >= 0 ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {incomeTrend >= 0 ? (
+                <IconTrendingUp className="size-3" />
+              ) : (
+                <IconTrendingDown className="size-3" />
+              )}
+              {incomeTrend >= 0 ? `+${incomeTrend}%` : `${incomeTrend}%`}
             </Badge>
             <span className="text-muted-foreground text-sm">
-              Salary + freelance
+              {incomeTrend >= 0 ? "Up from last month" : "Down from last month"}
             </span>
           </div>
         </CardContent>
@@ -188,12 +183,21 @@ export function SectionCards() {
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">
-            <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
-              <IconTrendingDown className="size-3" />
-              -4.1%
+            <Badge
+              variant="outline"
+              className={`flex gap-1 rounded-lg text-xs ${
+                expensesTrend >= 0 ? "text-red-600"  : "text-green-600"
+              }`}
+            >
+              {expensesTrend >= 0 ? (
+                <IconTrendingUp className="size-3" />
+              ) : (
+                <IconTrendingDown className="size-3" />
+              )}
+              {expensesTrend >= 0 ? `+${expensesTrend}%` : `${expensesTrend}%`}
             </Badge>
             <span className="text-muted-foreground text-sm">
-              Under budget this month
+              {expensesTrend >= 0 ? "Up from last month" : "Down from last month"}
             </span>
           </div>
         </CardContent>

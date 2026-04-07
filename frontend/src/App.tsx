@@ -27,8 +27,7 @@ export default function App() {
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               <Routes>
                 <Route path="/" element={<DashboardPage />} />
-                <Route path="/transactions" element={<TransactionsPage />} />
-                
+                <Route path="/transactions" element={<TransactionsPage />} />   
               </Routes>
             </div>
           </div>
