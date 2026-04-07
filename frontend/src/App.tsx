@@ -6,7 +6,6 @@ import { SiteHeader } from "@/components/header/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { AddTransactionProvider } from "@/context/AddTransactionContext"
 import TransactionsPage from "@/pages/transactions/TransactionsPage"
-import CategoriesPage from "@/pages/categories/CategoriesPage"
 import DashboardPage from "@/pages/dashboard/DashboardPage"
 
 export default function App() {
@@ -29,7 +28,7 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<DashboardPage />} />
                 <Route path="/transactions" element={<TransactionsPage />} />
-                <Route path="/categories" element={<CategoriesPage />} />
+                
               </Routes>
             </div>
           </div>

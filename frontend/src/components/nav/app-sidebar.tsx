@@ -3,18 +3,13 @@
 import type * as React from "react"
 import {
   IconDashboard,
-  IconHelp,
   IconList,
-  IconReport,
-  IconSettings,
-  IconTag,
   IconWallet,
-  IconFileSpreadsheet,
 } from "@tabler/icons-react"
 
-import { NavDocuments } from "@/components/nav/nav-documents"
+// import { NavDocuments } from "@/components/nav/nav-documents"
 import { NavMain } from "@/components/nav/nav-main"
-import { NavSecondary } from "@/components/nav/nav-secondary"
+// import { NavSecondary } from "@/components/nav/nav-secondary"
 import { NavUser } from "@/components/nav/nav-user"
 import {
   Sidebar,
@@ -43,13 +38,8 @@ const data = {
       url: "/transactions",
       icon: IconList,
     },
-    {
-      title: "Categories",
-      url: "/categories",
-      icon: IconTag,
-    },
   ],
-  navDocuments: [
+  /* navDocuments: [
     {
       name: "Monthly Summary",
       url: "#",
@@ -60,19 +50,8 @@ const data = {
       url: "#",
       icon: IconFileSpreadsheet,
     },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Help",
-      url: "#",
-      icon: IconHelp,
-    },
-  ],
+  ], */
+  
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -94,8 +73,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.navDocuments} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        {/* <NavDocuments items={data.navDocuments} /> */}
+        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
