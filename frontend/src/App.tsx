@@ -1,9 +1,9 @@
 "use client"
 
 import { Routes, Route } from "react-router-dom"
-import { AppSidebar } from "@/components/app-sidebar"
-import { SiteHeader } from "@/components/site-header"
-import { SectionCards } from "@/components/section-cards"
+import { AppSidebar } from "@/components/nav/app-sidebar"
+import { SiteHeader } from "@/components/header/site-header"
+import { SectionCards } from "@/components/cards/section-cards"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { AddTransactionProvider } from "@/context/AddTransactionContext"
 import TransactionsPage from "@/pages/transactions/TransactionsPage"

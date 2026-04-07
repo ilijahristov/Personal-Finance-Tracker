@@ -17,8 +17,7 @@ export function SiteHeader() {
   // In component:
   const { pathname } = useLocation()
   const title = titleMap[pathname] ?? "Dashboard"
-  
-  // Replace hardcoded "Dashboard" with {title}
+
 
   return (
     <header

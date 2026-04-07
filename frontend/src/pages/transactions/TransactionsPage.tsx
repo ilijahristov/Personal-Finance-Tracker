@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { AddTransactionModal } from "@/components/AddTransactionModal"
-import { DeleteCardModal } from "@/components/DeleteCardModal"
+import { AddTransactionModal } from "@/components/modals/AddTransactionModal"
+import { DeleteCardModal } from "@/components/modals/DeleteCardModal"
 import { useAddTransaction } from "@/context/AddTransactionContext"
 import { getAllTransactions, type Transaction } from "@/api/transactions"
 import {
