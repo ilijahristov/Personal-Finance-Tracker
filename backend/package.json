@@ -4,6 +4,8 @@
   "description": "A basic CRUD personal finance tracker fullstack web app",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

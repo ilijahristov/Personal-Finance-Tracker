@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000' as const;
+const BASE_URL = "/api" as const;
 
 export interface TransactionPayload {
   amount: number

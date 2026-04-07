@@ -63,9 +63,10 @@ export default function TransactionsPage() {
                   </span>
                 </div>
               </CardContent>
+
               <CardFooter>
                 <p className="text-sm text-muted-foreground">
-                  {tx.description || <span className="italic">No description</span>}
+                {tx.description || "Other"}
                 </p>                
               </CardFooter>
             </Card>

@@ -8,7 +8,6 @@ import {
   InputGroupAddon,
   InputGroupInput,
   InputGroupText,
-  InputGroupTextarea,
 } from "@/components/ui/input-group"
 
 const expenseCategories = [
@@ -26,6 +25,7 @@ const expenseCategories = [
   "Savings",
   "Gifts/Donations",
   "Entertainment",
+  "Other",
 ]
 
 const expenseSubCategories = {
@@ -35,6 +35,7 @@ const expenseSubCategories = {
     "Property Taxes",
     "Home Insurance",
     "Home Maintenance",
+    "Other",
   ],
   "Transportation": [
     "Gas",
@@ -118,12 +119,12 @@ const incomeCategories = [
 
 const incomeSubCategories = {
   "Salary": [
-    "Full-Time",
-    "Part-Time",
+    "Full-Time Salary",
+    "Part-Time Salary",
     "Other",
   ],
   "Freelance": [
-    "Freelance",
+    "Freelance Income",
     "Other",
   ],
   "Investments": [
@@ -156,6 +157,8 @@ export function AddTransactionModal() {
     }
     if (!type) { setError("Please select a type."); return }
     if (!date) { setError("Please select a date."); return }
+    if (!category) { setError("Please select a category."); return }
+    if (!subCategory && category !== "Other") { setError("Please select a subcategory."); return }
 
     setError("")
     setIsSubmitting(true)
@@ -164,7 +167,7 @@ export function AddTransactionModal() {
         amount: parseFloat(amount),
         type,
         category: category || null,
-        description: notes || null,
+        description: subCategory || null,
         date,
       })
       triggerRefresh()
@@ -262,13 +265,40 @@ export function AddTransactionModal() {
           </InputGroup>
         )}
 
+        {/* Category for income */}
+        {type === "income" && (
+          <InputGroup>
+            <InputGroupAddon>
+              <InputGroupText>Category</InputGroupText>
+            </InputGroupAddon>
+          
+
+          <select
+          data-slot="input-group-control"
+          className="flex-1 rounded-none border-0 bg-transparent text-sm px-3 outline-none cursor-pointer"
+          value={category}
+          onChange={(e) => {
+            setCategory(e.target.value)
+            setSubCategory("")
+          }}
+          >
+          <option value="">Select category...</option>
+          {incomeCategories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+          </select>
+          </InputGroup>
+        )}
+
         {/* SubCategory — slides in when a category is selected */}
         <div
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${category ? "max-h-24 opacity-100" : "max-h-0 opacity-0"}`}
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${category && category !== "Other" ? "max-h-24 opacity-100" : "max-h-0 opacity-0"}`}
         >
           <InputGroup>
             <InputGroupAddon>
-              <InputGroupText>Sub</InputGroupText>
+              <InputGroupText>Sub Category</InputGroupText>
             </InputGroupAddon>
             <select
               data-slot="input-group-control"
@@ -276,8 +306,20 @@ export function AddTransactionModal() {
               value={subCategory}
               onChange={(e) => setSubCategory(e.target.value)}
             >
-              <option value="">Select subcategory...</option>
-              {/* TODO: populate subcategories per category */}
+              <option value=""
+              onChange={(e) => {
+                setCategory(e.target.value)
+                setSubCategory("")
+              }}
+              >Select subcategory...</option>
+              {(type === "expense"
+                ? expenseSubCategories[category as keyof typeof expenseSubCategories]
+                : incomeSubCategories[category as keyof typeof incomeSubCategories]
+              )?.map((sub) => (
+                <option key={sub} value={sub}>
+                  {sub}
+                </option>
+              ))}
             </select>
           </InputGroup>
         </div>
@@ -295,24 +337,11 @@ export function AddTransactionModal() {
         </InputGroup>
 
         {/* Notes */}
-        <InputGroup>
-          <InputGroupTextarea
-            placeholder="Notes"
-            maxLength={150}
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-          />
-          <InputGroupAddon align="block-end">
-            <InputGroupText className="text-xs text-muted-foreground">
-              {150 - notes.length} characters left
-            </InputGroupText>
-          </InputGroupAddon>
-        </InputGroup>
-
+      
         {/* Action buttons */}
         {error && <p className="text-xs text-red-500 text-right -mt-2">{error}</p>}
         <div className="flex justify-end gap-2 mt-2">
-          
+
           <button
             onClick={handleAdd}
             disabled={isSubmitting}
