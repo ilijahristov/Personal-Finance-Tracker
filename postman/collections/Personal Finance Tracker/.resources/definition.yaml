@@ -1,5 +1,11 @@
 $kind: collection
+name: Personal Finance Tracker
 description: CRUD tests for /transactions endpoint
 variables:
   baseUrl: http://localhost:3000
   transactionId: ""
+  seed_amount: ""
+  seed_type: ""
+  seed_category: ""
+  seed_description: ""
+  seed_date: ""

@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{baseUrl}}/transactions"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.collectionVariables.unset('seed_transactions');
+      pm.collectionVariables.unset('seed_index');
+      console.log('Seed variables cleared — ready for a fresh run.');
+    language: text/javascript
+order: 7000

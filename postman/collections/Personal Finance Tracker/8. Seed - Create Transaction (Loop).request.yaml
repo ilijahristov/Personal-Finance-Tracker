@@ -1,0 +1,106 @@
+$kind: http-request
+url: "{{baseUrl}}/transactions"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "amount": {{seed_amount}},
+      "type": "{{seed_type}}",
+      "category": "{{seed_category}}",
+      "description": "{{seed_description}}",
+      "date": "{{seed_date}}"
+    }
+scripts:
+  - type: beforeRequest
+    code: |-
+      // On first iteration: generate all 120 transactions and store them
+      if (!pm.collectionVariables.get('seed_transactions')) {
+        const categories = {
+          income: ['Salary', 'Freelance', 'Investment', 'Bonus', 'Rental Income'],
+          expense: ['Rent', 'Groceries', 'Utilities', 'Entertainment', 'Transport', 'Dining', 'Healthcare', 'Shopping']
+        };
+
+        const randomAmount = (type) =>
+          type === 'income'
+            ? Math.floor(Math.random() * 3000) + 1000   // $1,000 - $4,000
+            : Math.floor(Math.random() * 500)  + 50;    // $50   - $550
+
+        const now = new Date();
+        const transactions = [];
+
+        for (let i = 11; i >= 0; i--) {
+          const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          const year = d.getFullYear();
+          const month = d.getMonth();
+          const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+          for (let j = 0; j < 10; j++) {
+            const type = j < 4 ? 'income' : 'expense'; // 4 income, 6 expense per month
+            const cats = categories[type];
+            const category = cats[Math.floor(Math.random() * cats.length)];
+            const day = Math.floor(Math.random() * daysInMonth) + 1;
+            const date =
+              year + '-' +
+              String(month + 1).padStart(2, '0') + '-' +
+              String(day).padStart(2, '0');
+
+            transactions.push({
+              amount: randomAmount(type),
+              type: type,
+              category: category,
+              description: category + ' - ' + date,
+              date: date
+            });
+          }
+        }
+
+        pm.collectionVariables.set('seed_transactions', JSON.stringify(transactions));
+        pm.collectionVariables.set('seed_index', '0');
+        console.log('Generated ' + transactions.length + ' transactions across 12 months.');
+      }
+
+      // Load the current transaction into individual variables for the request body
+      const transactions = JSON.parse(pm.collectionVariables.get('seed_transactions'));
+      const index = parseInt(pm.collectionVariables.get('seed_index'));
+      const tx = transactions[index];
+
+      pm.collectionVariables.set('seed_amount',      tx.amount);
+      pm.collectionVariables.set('seed_type',        tx.type);
+      pm.collectionVariables.set('seed_category',    tx.category);
+      pm.collectionVariables.set('seed_description', tx.description);
+      pm.collectionVariables.set('seed_date',        tx.date);
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      const transactions = JSON.parse(pm.collectionVariables.get('seed_transactions'));
+      const index = parseInt(pm.collectionVariables.get('seed_index'));
+      const total = transactions.length;
+      const next  = index + 1;
+
+      pm.test('Status is 201 Created', () => {
+        pm.response.to.have.status(201);
+      });
+
+      console.log(
+        '[' + next + '/' + total + '] ' +
+        pm.collectionVariables.get('seed_type') + ' $' +
+        pm.collectionVariables.get('seed_amount') + ' on ' +
+        pm.collectionVariables.get('seed_date')
+      );
+
+      if (next < total) {
+        // More transactions remaining — advance the index and loop back
+        pm.collectionVariables.set('seed_index', String(next));
+        postman.setNextRequest('8. Seed - Create Transaction (Loop)');
+      } else {
+        // All done — clean up seed variables
+        pm.collectionVariables.unset('seed_transactions');
+        pm.collectionVariables.unset('seed_index');
+        console.log('All ' + total + ' transactions seeded successfully!');
+        postman.setNextRequest(null);
+      }
+    language: text/javascript
+order: 8000
