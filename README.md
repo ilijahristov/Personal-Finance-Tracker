@@ -16,7 +16,7 @@ A full-stack personal finance management application built with **React**, **Nod
 ---
 
 
-Installation & Setup
+# Installation & Setup
 
 1. First cd into the backend, then install the dependencies and start the backend
 
@@ -27,9 +27,12 @@ npm run start:dev
 ```
 
 2. Set up the frontend
+
+```
 cd frontend
 npm install
 npm run dev
+```
 
 
 
