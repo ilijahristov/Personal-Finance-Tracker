@@ -9,9 +9,9 @@ const supabase = createClient(
 async function testConnection() {
     const { data, error } = await supabase.from('transactions').select('*').limit(1);
     if (error) {
-      console.error('❌ Supabase connection failed:', error.message);
+      console.error(' Supabase connection failed:', error.message);
     } else {
-      console.log('✅ Supabase connected successfully', data);
+      console.log(' Supabase connected successfully', data);
     }
   }
   

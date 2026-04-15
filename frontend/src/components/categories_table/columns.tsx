@@ -35,7 +35,7 @@ export const columns: ColumnDef<Transaction>[] = [
       const sign = isIncome ? "+" : "-"
       const formatted = Math.abs(row.original.amount).toLocaleString("en-GB", {
         style: "currency",
-        currency: "GBP",
+        currency: "USD",
       })
 
       return `${sign}${formatted}`

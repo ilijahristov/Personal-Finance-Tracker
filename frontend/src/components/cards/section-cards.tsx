@@ -96,7 +96,7 @@ export function SectionCards() {
   }, [])
 
   return (
-    <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 lg:px-6">
+    <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-3 grid grid-cols-1 gap-4 px-4 lg:px-6">
       <Card className="@container/card">
         <CardHeader>
           <CardDescription>Total Balance</CardDescription>
@@ -198,25 +198,6 @@ export function SectionCards() {
             </Badge>
             <span className="text-muted-foreground text-sm">
               {expensesTrend >= 0 ? "Up from last month" : "Down from last month"}
-            </span>
-          </div>
-        </CardContent>
-      </Card>
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Savings Rate</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            29.2%
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-2">
-            <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
-              <IconTrendingUp className="size-3" />
-              +3.1%
-            </Badge>
-            <span className="text-muted-foreground text-sm">
-              On track for goal
             </span>
           </div>
         </CardContent>

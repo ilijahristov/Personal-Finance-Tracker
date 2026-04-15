@@ -1,51 +1,37 @@
-# 💸 Personal Finance Tracker
+# Personal Finance Tracker
 
 A full-stack personal finance management application built with **React**, **Node.js/Express**, **TypeScript**, and **PostgreSQL via Supabase**. Track income, expenses and categorize transactions.
 
 ---
 
-## 🏗️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
 | Frontend | React |
 | Backend | Node.js + Express |
 | Database | PostgreSQL (Supabase) |
-| Environment | dotenv |
 | API Testing | Postman |
 
 ---
 
-## 📁 Project Structure
+
+Installation & Setup
+
+1. First cd into the backend, then install the dependencies and start the backend
 
 ```
-Personal-Finance-Tracker/
-├── backend/
-│   ├── db/
-│   │   └── supabase.js          # Supabase client initialization
-│   ├── routes/
-│   │   └── transactions.js      # Transaction route handlers
-│   ├── .env                     # Environment variables
-│   ├── .gitignore
-│   └── app.js                   # Express app entry point
-├── frontend/
-│   └── ...                      # React app
-├── .postman/
-│   └── finance-tracker.postman_collection.json
-└── README.md
+cd backend
+npm install
+npm run start:dev
 ```
 
----
-
-## ⚙️ Getting Started
-
-### Prerequisites
-
-- Node.js v18+
-- A [Supabase](https://supabase.com) account and project
+2. Set up the frontend
+cd frontend
+npm install
+npm run dev
 
 
----
 
 ## 🗄️ Database Schema
 
@@ -191,26 +177,8 @@ A Postman collection is included in `.postman/finance-tracker.postman_collection
 2. Set the `baseUrl` collection variable to match your server port (default `http://localhost:3000`)
 3. Run the collection via **▶ Run collection**
 
-The collection runs all 6 tests in sequence and automatically passes the `transactionId` between requests — no manual copy-pasting needed.
-
-| # | Request | Validates |
-|---|---|---|
-| 1 | `POST /transactions` | 201, has `id`, correct amount |
-| 2 | `GET /transactions` | 200, returns array |
-| 3 | `GET /transactions/:id` | 200, correct record |
-| 4 | `PUT /transactions/:id` | 200, updated values |
-| 5 | `DELETE /transactions/:id` | 204, empty body |
-| 6 | `GET /transactions/:id` | 404 after deletion |
+The collection runs all 6 tests in sequence and automatically passes the `transactionId` between requests.
 
 
-## 🗺️ Roadmap
-
-- [x] Transaction CRUD API
-- [x] Supabase PostgreSQL integration
-- [x] Postman test collection
-- [ ] React frontend — transaction list and form
-- [ ] Summary dashboard — total income vs expenses
-- [ ] Filter by category and date range
-- [ ] Authentication
 
 ---
