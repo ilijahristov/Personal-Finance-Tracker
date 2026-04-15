@@ -11,6 +11,7 @@ A full-stack personal finance management application built with **React**, **Nod
 | Frontend | React |
 | Backend | Node.js + Express |
 | Database | PostgreSQL (Supabase) |
+| Auth | bcyptjs
 | API Testing | Postman |
 
 ---
